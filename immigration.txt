@@ -1,0 +1,204 @@
+"gnomes" modify
+{
+    {
+      ids = { "GNOME" }
+      traits = { WORKER LEADER }
+      invisible = true
+      initialRecruitment = 3
+      spawnLocation = NearLeader
+    }
+    {
+      ids = { "GNOME" }
+      traits = { WORKER LEADER }
+      frequency = 0.5
+    }
+    {
+      ids = { "GNOME_ROGUE" }
+      traits = { FIGHTER LEADER }
+      frequency = 0.5
+      requirements = {
+        { 0.0 TechId "gnome socium" }
+      }
+    }
+    {
+      ids = { "GNOME_OVERSEER" }
+      traits = { FIGHTER LEADER }
+      frequency = 0.3
+      requirements = {
+        { 0.0 TechId "gnome socium" }
+      }
+    }
+    {
+      ids = { "GNOME_TECHPRIEST" }
+      traits = { FIGHTER LEADER }
+      frequency = 0.2
+      requirements = {
+        { 0.0 TechId "gnome clergy" }
+      }
+    }
+
+    {
+      ids = { "AUTODRONE_CORPUS_WOOD" }
+      traits = { WORKER FIGHTER NO_LIMIT }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "master automatons" }
+      }
+      specialTraits = {
+         { 1.0 { Lasting { SUMMONED 200 }}}
+      }
+    }
+    {
+      ids = { "AUTODRONE_CORPUS_STONE" }
+      traits = { WORKER FIGHTER NO_LIMIT }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "master automatons" }
+      }
+      specialTraits = {
+         { 1.0 { Lasting { SUMMONED 200 }}}
+      }
+    }
+    {
+      ids = { "AUTODRONE_CORPUS_IRON" }
+      traits = { WORKER FIGHTER NO_LIMIT }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "gnome forging" }
+        { 0.0 TechId "master automatons" }
+      }
+      specialTraits = {
+         { 1.0 { Lasting { SUMMONED 200 }}}
+      }
+    }
+
+    {
+      ids = { "AUTOMINITON_CORPUS_WOOD" }
+      traits = { WORKER FIGHTER NO_LIMIT }
+      requirements = {
+        { 0.0 AssembledRequirement }
+      }
+    }
+    {
+      ids = { "AUTOMINITON_CORPUS_STONE" }
+      traits = { WORKER FIGHTER NO_LIMIT }
+      requirements = {
+        { 0.0 AssembledRequirement }
+      }
+    }
+    {
+      ids = { "AUTOMINITON_CORPUS_IRON" }
+      traits = { WORKER FIGHTER NO_LIMIT }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "gnome forging" }
+      }
+    }
+
+    {
+      ids = { "AUTOMATON_CORPUS_WOOD" }
+      traits = { FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+      }
+    }
+    {
+      ids = { "LIGHT_AUTOMATON_CORPUS_WOOD" }
+      traits = { FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "advanced automatons" }
+      }
+    }
+    {
+      ids = { "AUTOMATON_CORPUS_STONE" }
+      traits = { WORKER FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+      }
+    }
+    {
+      ids = { "LIGHT_AUTOMATON_CORPUS_STONE" }
+      traits = { WORKER FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "advanced automatons" }
+      }
+    }
+    {
+      ids = { "AUTOMATON_CORPUS_IRON" }
+      traits = { WORKER FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "gnome forging" }
+      }
+    }
+    {
+      ids = { "LIGHT_AUTOMATON_CORPUS_IRON" }
+      traits = { WORKER FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "gnome forging" }
+        { 0.0 TechId "advanced automatons" }
+      }
+    }
+    {
+      ids = { "HEAVY_AUTOMATON_CORPUS_IRON" }
+      traits = { WORKER FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.0 TechId "gnome forging" }
+        { 0.0 TechId "advanced automatons" }
+      }
+    }
+
+    {
+      ids = { "DREADNAUGHT_CORPUS_WOOD" }
+      traits = { WORKER FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.1 CostInfo "CORPSE" 2}
+        { 0.0 TechId "master automatons" }
+      }
+    }
+    {
+      ids = { "DREADNAUGHT_CORPUS_STONE" }
+      traits = { WORKER FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.1 CostInfo "CORPSE" 2}
+        { 0.0 TechId "master automatons" }
+      }
+    }
+    {
+      ids = { "DREADNAUGHT_CORPUS_IRON" }
+      traits = { WORKER FIGHTER }
+      requirements = {
+        { 0.0 AssembledRequirement }
+        { 0.1 CostInfo "CORPSE" 2}
+        { 0.0 TechId "gnome forging" }
+        { 0.0 TechId "master automatons" }
+      }
+    }
+}
+
+"debug_gnomes"
+{
+  {
+    ids = { "AUTOMATON_WORKER_WOOD" }
+    traits = { WORKER NO_LIMIT }
+    invisible = true
+    initialRecruitment = 10
+    spawnLocation = NearLeader
+  }
+  {
+    ids = { "GNOME_TECHPRIEST" }
+    traits = { FIGHTER LEADER }
+    requirements = {
+      { 0.0 TechId "gnome clergy" }
+    }
+    invisible = true
+    initialRecruitment = 3
+    spawnLocation = NearLeader
+  }
+}

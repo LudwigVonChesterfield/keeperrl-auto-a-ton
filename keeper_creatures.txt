@@ -1,0 +1,53 @@
+"4_gnomes" modify
+{
+  creatureId = { "GNOME_OVERSEER" }
+
+  technology = {
+      "traps" "advanced traps"
+      "gnome socium" "gnome clergy"
+      "gnome forging" "gnome jewellery" "gnome engineering" "psy-force" 
+      "gnome nobels"
+      "automatons" "advanced automatons" "master automatons" "arcane automatons"
+      "gnome obsolescence"
+      "pig breeding" "alchemy" "incendiary alchemy"
+  }
+  initialTech = { "traps" "automatons" }
+  buildingGroups = {
+      "structure" "doors" "floors" "storage" "zones" "throne" "beds"
+      "pigsty" "gnome_crafting" "laboratory" "orders" "installations" "gnome_installations" "traps" "gnome_traps"
+  }
+}
+
+"5_gnome_debug"
+{
+  creatureId = { "GNOME_OVERSEER" }
+  tribeAlignment = LAWFUL
+  immigrantGroups = { "gnomes" "debug_gnomes"}
+  technology = {
+      "traps" "advanced traps"
+      "gnome socium" "gnome clergy"
+      "gnome forging" "gnome jewellery" "gnome engineering" "psy-force" 
+      "gnome nobels"
+      "automatons" "advanced automatons" "master automatons" "arcane automatons"
+      "gnome obsolescence"
+      "pig breeding" "alchemy" "incendiary alchemy"
+  }
+  initialTech = {
+      "traps" "advanced traps"
+      "gnome socium" "gnome clergy"
+      "gnome forging" "gnome jewellery" "gnome engineering" "psy-force" 
+      "gnome nobels"
+      "automatons" "advanced automatons" "master automatons" "arcane automatons"
+      "gnome obsolescence"
+      "pig breeding" "alchemy" "incendiary alchemy"
+  }
+  baseNameGen = "TOWN"
+  buildingGroups = {
+      "structure" "doors" "floors" "storage" "zones" "throne" "beds"
+      "pigsty" "gnome_crafting" "laboratory" "orders" "installations" "gnome_installations" "traps" "gnome_traps"
+  }
+  workshopGroups = { "traps" "gnomes" }
+  description = "Seize the means of production and engineer traps, automatons and other contraptions."
+  noLeader = true
+}
+

@@ -1,0 +1,104 @@
+"gnomes" modify
+{
+  "WORKSHOP"
+  {
+      # Gnome workshop armors are twice as expensive since they are not *good* with it.
+      {{Simple "Robe"}                  2        "WOOD" 40       "gnome socium"}
+      {{Simple "LeatherBoots"}          2        "WOOD" 20       "gnome socium"}
+
+      {{TrapItem "TRAP_TRIGGER" "trigger"}   8       "WOOD" 20   "advanced traps"}
+      {{TrapItem "DESTROY_WALLS_TRAP" "crumble"}8    "WOOD" 20   "advanced traps"}
+
+      {{Assembled "AUTODRONE_CORPUS_WOOD" {"autodrone_3" Rgb 180 140 55 255}}
+            2       "WOOD" 10    "master automatons"}
+      {{Assembled "AUTOMINITON_CORPUS_WOOD" {"automaton_corpus" Rgb 180 140 55 255}}
+            4       "WOOD" 10    "automatons"}
+      {{Assembled "AUTOMATON_CORPUS_WOOD" {"automaton_corpus" Rgb 180 140 55 255}}
+            8       "WOOD" 30    "automatons"}
+      {{Assembled "DREADNAUGHT_CORPUS_WOOD" {"automaton_corpus" Rgb 180 140 55 255}}
+            16      "WOOD" 80    "master automatons"}
+      {{Simple    "HumanoidHeadWood"}        2       "WOOD" 5    "advanced automatons"}
+      {{Simple    "ArcherHeadWood"}          2       "WOOD" 5    "advanced automatons"}
+      {{Simple    "AutomatonLegsWood"}       2       "WOOD" 5    "automatons"}
+      {{Simple    "AutomatonArmsWood"}       2       "WOOD" 5    "automatons"}
+      {{Simple    "DrillAutomatonArmsWood"}  2       "WOOD" 5    "automatons"}
+      {item = {Simple "TorchAutomatonArmsWood"}
+       work = 2
+       cost = "WOOD" 5
+       tech = "automatons"
+       requireIngredient = "torch"
+      }
+
+      {{Assembled "AUTODRONE_CORPUS_STONE" {"autodrone_3" Rgb 181 181 129 255}}
+            2       "STONE" 10    "master automatons"}
+      {{Assembled "AUTOMINITON_CORPUS_STONE" {"automaton_corpus" Rgb 181 181 129 255}}
+            4       "STONE" 10    "automatons"}
+      {{Assembled "AUTOMATON_CORPUS_STONE" {"automaton_corpus" Rgb 181 181 129 255}}
+            8       "STONE" 30    "automatons"}
+      {{Assembled "LIGHT_AUTOMATON_CORPUS_STONE" {"automaton_corpus" Rgb 181 181 129 255}}
+            8       "STONE" 20    "advanced automatons"}
+      {{Assembled "DREADNAUGHT_CORPUS_STONE" {"automaton_corpus" Rgb 181 181 129 255}}
+            16      "STONE" 80    "master automatons"}
+      {{Simple    "HumanoidHeadStone"}        2       "STONE" 5    "advanced automatons"}
+      {{Simple    "ArcherHeadStone"}          2       "STONE" 5    "advanced automatons"}
+      {{Simple    "FireHeadStone"}            2       "STONE" 5    "advanced automatons"}
+      {{Simple    "AcidHeadStone"}            2       "STONE" 5    "advanced automatons"}
+      {{Simple    "AutomatonLegsStone"}       2       "STONE" 5    "automatons"}
+      {{Simple    "AutomatonArmsStone"}       2       "STONE" 5    "automatons"}
+      {{Simple    "DrillAutomatonArmsStone"}  2       "STONE" 5    "automatons"}
+  }
+  "FORGE"
+  {
+      # Gnome forgery is twice as expensive, since they are not *good* with it.
+      {{Simple "Knife"}                 5        "IRON" 20         "gnome forging" }
+      {{Simple "Sword"}                 10       "IRON" 40         "gnome forging" }
+      {{Simple "ChainArmor"}            30       "IRON" 80         "gnome forging" }
+      {{Simple "IronHelm"}              8        "IRON" 32         "gnome forging" }
+      {{Simple "IronBoots"}             12       "IRON" 48         "gnome forging" }
+      {{Simple "IronGloves"}            3        "IRON" 4          "gnome forging" }
+      {{Simple "IronShield"}            12       "IRON" 48         "gnome forging" }
+
+      {{Simple    "IronRifle"}                   2       "IRON" 5    "gnome engineering"}
+      {{Simple    "AdaRifle"}                    2       "ADA"  5    "gnome engineering"}
+
+      # No way to have effects on projectiles, so not existing atm.
+      # {{Simple    "FlameRifle"}                2       "IRON" 10   "gnome engineering"}
+
+      {{Assembled "AUTODRONE_CORPUS_IRON" {"autodrone_3" Rgb 140 148 148 255}}
+            2       "IRON" 10    "master automatons"}
+      {{Assembled "AUTOMINITON_CORPUS_IRON" {"automaton_corpus" Rgb 140 148 148 255}}
+            4       "IRON" 10    "automatons"}
+      {{Assembled "AUTOMATON_CORPUS_IRON" {"automaton_corpus" Rgb 140 148 148 255}}
+            8       "IRON" 30    "automatons"}
+      {{Assembled "LIGHT_AUTOMATON_CORPUS_IRON" {"automaton_corpus" Rgb 140 148 148 255}}
+            8       "IRON" 20    "advanced automatons"}
+      {{Assembled "HEAVY_AUTOMATON_CORPUS_IRON" {"automaton_corpus" Rgb 140 148 148 255}}
+            8       "IRON" 40    "advanced automatons"}
+      {{Assembled "DREADNAUGHT_CORPUS_IRON" {"automaton_corpus" Rgb 140 148 148 255}}
+            16      "IRON" 80    "master automatons"}
+      {{Simple    "HumanoidHeadIron"}        2       "IRON" 5    "advanced automatons"}
+      {{Simple    "ArcherHeadIron"}          2       "IRON" 5    "advanced automatons"}
+      {{Simple    "FireHeadIron"}            2       "IRON" 5    "advanced automatons"}
+      {{Simple    "AcidHeadIron"}            2       "IRON" 5    "advanced automatons"}
+      {{Simple    "AutomatonArmsIron"}       2       "IRON" 5    "automatons"}
+      {{Simple    "SharpAutomatonArmsIron"}  2       "IRON" 5    "advanced automatons"}
+      {{Simple    "DrillAutomatonArmsIron"}  2       "IRON" 5    "automatons"}
+      {{Simple    "RepairAutomatonArmsIron"} 2       "IRON" 5    "master automatons"}
+      {{Simple    "CannonballAutomatonArmsIron"} 4    "IRON" 10   "master automatons"}
+      {{Simple    "AutomatonLegsIron"}       2       "IRON" 5    "automatons"}
+  } 
+  "LABORATORY"
+  {
+      {{Potion Fire} 4 "GOLD" 5}
+      {{Potion Name "more fire" Area 1 Fire} 8 "GOLD" 10}
+      {{Potion Lasting OIL} 4 "GOLD" 15}
+      {{AutomatonPaint Rgb 210 90 90 255} 2 }
+      {{AutomatonPaint Rgb 90 210 90 255} 2 }
+      {{AutomatonPaint Rgb 90 90 210 255} 2 }
+      {{AutomatonPaint Rgb 210 210 90 255} 2 }
+      {{AutomatonPaint Rgb 90 210 210 255} 2 }
+      {{AutomatonPaint Rgb 210 90 210 255} 2 }
+      {{AutomatonPaint Rgb 90 90 90 255} 2 }
+      {{AutomatonPaint Rgb 210 210 210 255} 2 }
+  }
+}

@@ -1,0 +1,255 @@
+"Torch" modify
+  {
+    ingredientType = "torch"
+  }
+
+"HarpyFeathers"
+  {
+    viewId = { "harpy_feathers" }
+    name = "harpy feathers"
+    itemClass = OTHER
+    weight = 0.1
+    price = 10
+    ingredientType = "harpy_feathers"
+  }
+
+"TorchAutomatonArmsWood" inherit "AutomatonArmsWood"
+  {
+    name = "pair of arm-mounted torches"
+    shortName = "torch-arms"
+    automatonPart = {
+      Description "Grants a melee attack and lights up the way."
+      Chain {
+        AddBodyPart ARM 2 { Intrinsic { "fist_attack" } "torch" 5 { attackType = HIT attackMsg = SWING } }
+      }
+    }
+  }
+
+"HumanoidHeadStone"
+  {
+    viewId = { "automaton_head" Rgb 191 186 172 255 }
+    name = "stone humanoid head"
+    shortName = "humanoid head"
+    weight = 4
+    itemClass = TOOL
+    automatonPart = {
+      Description "Allows using equipment. Applies slowness."
+      Chain {
+        FirstSuccessful {
+          RemovePermanent SPEED
+          Permanent SLOWED
+        }
+        IncreaseAttr DEFENSE 1
+        MakeHumanoid
+        AddBodyPart HEAD 1 none
+      }
+    }
+  }
+"ArcherHeadStone" inherit "HumanoidHeadStone"
+  {
+    name = "stone arrow shooting head"
+    shortName = "arrow shooting"
+    automatonPart = {
+      Description "Allows shooting arrows. Adds +1 defense. Second head adds additional +12 ranged damage. Applies slowness."
+      Chain {
+        FirstSuccessful {
+          RemovePermanent SPEED
+          Permanent SLOWED
+        }
+        IncreaseAttr RANGED_DAMAGE 27
+        IncreaseAttr DEFENSE 1
+        AddBodyPart HEAD 1 none
+        FirstSuccessful {
+          GrantAbility "shoot arrow"
+          IncreaseAttr RANGED_DAMAGE -15
+        }
+      }
+    }
+  }
+"FireHeadStone" inherit "HumanoidHeadStone"
+  {
+    name = "stone fire breathing head"
+    shortName = "fire breathing"
+    automatonPart = {
+      Description "Grants the \"fire breath\" ability. Adds +1 defense. Applies slowness."
+      Chain {
+        FirstSuccessful {
+          RemovePermanent SPEED
+          Permanent SLOWED
+        }
+        GrantAbility "fire breath"
+        IncreaseAttr DEFENSE 1
+        AddBodyPart HEAD 1 none
+      }
+    }
+  }
+"AcidHeadStone" inherit "HumanoidHeadStone"
+  {
+    name = "stone acid spitting head"
+    shortName = "acid spitting"
+    automatonPart = {
+      Description "Grants the \"acid stream\" ability. Adds +1 defense. Applies slowness."
+      Chain {
+        FirstSuccessful {
+          RemovePermanent SPEED
+          Permanent SLOWED
+        }
+        GrantAbility "acid stream"
+        IncreaseAttr DEFENSE 1
+        AddBodyPart HEAD 1 none
+      }
+    }
+  }
+"AutomatonLegsStone"
+  {
+    viewId = { "automaton_legs" Rgb 191 186 172 255 }
+    name = "pair of stone automaton legs"
+    shortName = "stone legs"
+    weight = 8
+    itemClass = TOOL
+    automatonPart = {
+      Description "Adds mobility. Adds +1 defense. Second pair grants the \"jump\" ability. Applies slowness."
+      Chain {
+        FirstSuccessful {
+          RemovePermanent SPEED
+          Permanent SLOWED
+        }
+        IncreaseAttr DEFENSE 1
+        AddBodyPart LEG 2 none
+        FirstSuccessful {
+          RemovePermanent IMMOBILE
+          GrantAbility "jump"
+        }
+      }
+    }
+  }
+"AutomatonArmsStone"
+  {
+    viewId = { "automaton_arms" Rgb 191 186 172 255 }
+    name = "pair of stone automaton arms"
+    shortName = "stone arms"
+    weight = 6
+    itemClass = TOOL
+    automatonPart = {
+      Description "Grants a melee attack and +8 damage and +1 defense bonus. Applies slowness."
+      Chain {
+        FirstSuccessful {
+          RemovePermanent SPEED
+          Permanent SLOWED
+        }
+        IncreaseAttr DAMAGE 8
+        IncreaseAttr DEFENSE 1
+        AddBodyPart ARM 2 { Intrinsic { "fist_attack" } "fists" 6 { attackMsg = SWING } }
+      }
+    }
+  }
+
+"CannonballAutomatonArmsIron" inherit "AutomatonArmsIron"
+  {
+    name = "pair of iron automaton arm-cannons"
+    shortName = "arm-cannons"
+    automatonPart = {
+      Description "Grants the ability to shoot cannonballs. Second pair of cannons adds additional +30 ranged damage. Adds +2 defense. Applies slowness."
+      Chain {
+        FirstSuccessful {
+          RemovePermanent SPEED
+          Permanent SLOWED
+        }
+        IncreaseAttr RANGED_DAMAGE 50
+        IncreaseAttr DEFENSE 2
+        AddBodyPart ARM 2 none
+        FirstSuccessful {
+          GrantAbility "shoot cannonball"
+          IncreaseAttr RANGED_DAMAGE -20
+        }
+      }
+    }
+  }
+
+"DrillAutomatonArmsWood" inherit "AutomatonArmsWood"
+  {
+    name = "pair of wooden automaton drills"
+    shortName = "wooden drills"
+    automatonPart = {
+      Description "Grants an ability to dig and a melee attack. Adds +6 damage bonus."
+      Chain {
+        IncreaseSkill DIGGING 0.8
+        IncreaseAttr DAMAGE 6
+        AddBodyPart ARM 2
+        { Intrinsic { "fist_attack" } "fists" 5 { attackMsg = SWING } }
+      }
+    }
+  }
+"DrillAutomatonArmsStone" inherit "AutomatonArmsStone"
+  {
+    name = "pair of stone automaton drills"
+    shortName = "stone drills"
+    automatonPart = {
+      Description "Grants an ability to dig and a melee attack. Adds +8 damage and +1 defense bonus."
+      Chain {
+        FirstSuccessful {
+          RemovePermanent SPEED
+          Permanent SLOWED
+        }
+        IncreaseSkill DIGGING 0.8
+        IncreaseAttr DAMAGE 8
+        IncreaseAttr DEFENSE 1
+        AddBodyPart ARM 2
+        { Intrinsic { "fist_attack" } "fists" 6 { attackMsg = SWING } }
+      }
+    }
+  }
+"DrillAutomatonArmsIron" inherit "AutomatonArmsIron"
+  {
+    name = "pair of iron automaton drills"
+    shortName = "iron drills"
+    automatonPart = {
+      Description "Grants an ability to dig and a melee attack. Adds +10 damage and +2 defense bonus."
+      Chain {
+        IncreaseSkill DIGGING 0.8
+        IncreaseAttr DAMAGE 10
+        IncreaseAttr DEFENSE 2
+        AddBodyPart ARM 2
+        { Intrinsic { "fist_attack" } "fists" 8 { attackMsg = SWING } }
+      }
+    }
+  }
+
+"IronRifle"
+  {
+    viewId = { "iron_rifle" }
+    name = "gnome iron rifle"
+    itemClass = RANGED_WEAPON
+    equipmentSlot = RANGED_WEAPON
+    rangedWeapon = RANGED_DAMAGE "bullet" { "bullet" } 16
+    weaponInfo = {
+      twoHanded = true
+    }
+    weight = 2
+    modifiers = {
+      RANGED_DAMAGE 20
+    }
+    price = 20
+  }
+
+"AdaRifle" inherit "IronRifle"
+  {
+    viewId = { "ada_rifle" }
+    name = "gnome adamantine rifle"
+    weight = 3
+    modifiers = {
+      RANGED_DAMAGE 30
+    }
+    price = 100
+  }
+
+"FlameRifle" inherit "IronRifle"
+  {
+    viewId = { "flame_rifle" }
+    name = "gnome flaming-shot rifle"
+    weight = 2
+    modifiers = {
+      RANGED_DAMAGE 20
+    }
+    price = 100
+  }

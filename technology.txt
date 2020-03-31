@@ -1,0 +1,12 @@
+"gnome socium"             { "Encounter new gnome castes, such as rogues and overseers."}
+"gnome clergy"             { "Encounter gnome techpriestery, which blesses the machines."   {"automatons" "gnome socium"}}
+
+"gnome forging"            { "Re-invent forgotten in gnome society forging technology."     {"gnome socium"}}
+"gnome jewellery"          { "Re-invent forgotten jewellering technology."                  {"gnome socium"}}
+"gnome engineering"        { "Produce rifles."                                              {"gnome forging"}}
+"psy-force"                { "Produce amulets capable of empowering wielder for a spell cast." {"gnome clergy"}}
+"gnome nobels"             { "Encounter the elite of gnome society, capable of strong psy-casting." {"psy-force"}}
+
+"master automatons"        { "Build very advanced automaton parts, such as dreadnaught chassis."         {"advanced automatons"}}
+"arcane automatons"        { "Produce magical automaton parts."                                          {"automatons" "gnome clergy"}}
+"gnome obsolescence"       { "Produce automaton parts that allow automatons to produce more automatons." {"master automatons" "arcane automatons"}}

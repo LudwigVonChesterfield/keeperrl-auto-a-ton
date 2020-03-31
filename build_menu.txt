@@ -1,0 +1,22 @@
+  "gnome_living"
+  {
+    { Furniture {{ "PIGSTY" }     "WOOD" 5 }                       "Pigsty"            "Living"
+        "" 0 {TechId "pig breeding"}}
+    { Furniture {{ "DINING_TABLE" }"WOOD" 5 }                      "Dining table"      "Living"
+        "" 0 {}}
+  }
+
+  "gnome_crafting"
+  {
+    { Furniture {{ "WORKSHOP" }   "WOOD" 15 }                      "Workshop"          "Crafting"
+        "Produces leather equipment, traps, first-aid kits and other." m {} true  BUILD_WORKSHOP}
+
+    { Furniture {{ "FORGE" }      "IRON" 20 }                      "Forge"             "Crafting"
+        "Produces metal weapons and armor."    0 { TechId "gnome forging" }}
+  }
+
+  "gnome_installations"
+  {
+    { Furniture {{ "DREADNAUGHT_HEART" }              "ADA"   50 }                   "Dreadnaught heart"           "Installations"
+        "Is required for a functioning dreadnaught." 0 { TechId "master automatons" }}}
+  }

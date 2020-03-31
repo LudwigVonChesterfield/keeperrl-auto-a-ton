@@ -1,0 +1,7 @@
+"DREADNAUGHT_HEART"
+{
+  name = "dreadnaught heart"
+  viewId = { "altar" }
+  canHideHere = true
+  strength = 160
+}

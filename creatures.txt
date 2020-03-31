@@ -1,0 +1,516 @@
+"HARPY" modify append
+  {
+    body = append {
+      drops = {
+        { Simple "HarpyFeathers" } 1
+      }
+    }
+  }
+
+"GNOME" modify append
+  {
+    viewId = { "gnome" }
+    attr = {
+      DAMAGE 4
+      DEFENSE 15
+      PARRY 2
+    }
+    body = {
+      type = Humanoid SMALL
+    }
+    skills = {
+      "WORKSHOP" 0.5
+      "FORGE" 0.5
+      "DIGGING" 0.8
+    }
+    chatReactionFriendly = "talks about digging"
+    chatReactionHostile = "\"Die!\""
+    name = {
+      name = "gnome"
+    }
+    spells = { "repair automaton" }
+    inventory = {
+      { Simple "LeatherBoots" }
+    }
+  }
+"GNOME_ROGUE" inherit "GNOME"
+  {
+    viewId = { "gnome_rogue" }
+    attr = {
+      DAMAGE 4
+      DEFENSE 15
+      RANGED_DAMAGE 10
+      PARRY 5
+    }
+    skills = {
+      "DIGGING" 0.5
+    }
+    maxLevelIncrease = {
+      ARCHERY 3
+    }
+    chatReactionFriendly = "talks about robbing"
+    permanentEffects = {
+      AMBUSH_SKILL 1
+      DISARM_TRAPS_SKILL 1
+    }
+    name = {
+      name = "gnome rogue"
+    }
+    spells = { }
+    inventory = {
+      { Simple "Knife" }
+      { Simple "LeatherBoots" }
+      { type = Simple "Robe" }
+    }
+  }
+"GNOME_OVERSEER" inherit "GNOME"
+  {
+    viewId = { "gnome_overseer" }
+    skills = {
+      "LABORATORY" 0.8
+    }
+    chatReactionFriendly = "talks about management"
+    chatReactionHostile = "\"Die!\""
+    name = {
+      name = "gnome overseer"
+    }
+    spells = { "repair automaton" "overdrive" "defense protocols" "attack protocols" }
+    inventory = {
+      { Simple "LeatherBoots" }
+      { Simple "Robe" }
+    }
+  }
+"GNOME_TECHPRIEST" inherit "GNOME"
+  {
+    viewId = { "gnome_techpriest" }
+    skills = {
+      "WORKSHOP" 0.8
+      "FORGE" 0.8
+    }
+    chatReactionFriendly = "babbles incoherently about technology"
+    chatReactionHostile = "\"-.. .. .!\""
+    name = {
+      name = "gnome techpriest"
+    }
+    spells = { "repair automaton" "advanced automata repair" "rapid drone construction"}
+    inventory = {
+      { Simple "LeatherBoots" }
+      { Simple "Robe" }
+    }
+  }
+"GNOME_EXALTED_TECHPRIEST" inherit "GNOME_TECHPRIEST"
+{
+    viewId = { "gnome_exalted_techpriest" }
+    skills = {
+      "WORKSHOP" 1.0
+      "FORGE" 1.0
+    }
+    chatReactionFriendly = "babbles incomprehensibly about technology"
+    chatReactionHostile = "\"-.. .. .!\""
+    name = {
+      name = "exalted gnome techpriest"
+    }
+    spells = { "repair automaton" "advanced automata repair" "rapid drone construction"}
+    spellSchools = { "techpriestry" }
+    maxLevelIncrease = {
+      MELEE 10
+      SPELL 10
+    }
+    inventory = {
+      { Simple "LeatherBoots" }
+      { Simple "Robe" }
+    }
+}
+
+"AUTODRONE" inherit "AUTOMATON"
+  {
+    viewId = { "autodrone_3" Rgb 204 202 196 255 }
+    attr = {
+      DAMAGE 10
+      DEFENSE 12
+    }
+    permanentEffects = {
+      SPEED 1
+      FLYING 1
+    }
+    body = {
+      type = NonHumanoid SMALL
+      material = IRON
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+      intrinsicAttacks = {
+        TORSO {{
+          isExtraAttack = true
+          itemType = { Intrinsic { "fist_attack" } "bodyslam" 4 {
+            attackType = HIT
+            meleeAttackAttr = DAMAGE
+            attackMsg = THRUST } }}}
+      }
+    }
+    name = {
+      name = "iron autodrone"
+    }
+  }
+"TORCH_AUTODRONE" inherit "AUTODRONE"
+{
+  viewId = { "autodrone_6" Rgb 204 202 196 255 }
+  attr = {
+    DAMAGE 10
+    DEFENSE 14
+  }
+  permanentEffects = {
+    LIGHT_SOURCE 1
+  }
+}
+"REPAIR_AUTODRONE" inherit "AUTODRONE"
+{
+  viewId = { "autodrone_4" Rgb 204 202 196 255 }
+  attr = {
+    DAMAGE 10
+    DEFENSE 14
+  }
+  spells = { "repair automaton" }
+}
+"ACID_AUTODRONE" inherit "AUTODRONE"
+{
+  viewId = { "autodrone_1" Rgb 204 202 196 255 }
+  attr = {
+    DAMAGE 10
+    DEFENSE 14
+  }
+  spells = { "acid stream" }
+}
+"CANNONBALL_AUTODRONE" inherit "AUTODRONE"
+{
+  viewId = { "autodrone_5" Rgb 204 202 196 255 }
+  attr = {
+    DAMAGE 10
+    DEFENSE 14
+    RANGED_DAMAGE 50
+  }
+  permanentEffects = {
+    FLYING 1
+  }
+  spells = { "shoot cannonball" }
+}
+
+"AUTOMATON_CORPUS_WOOD" modify
+  {
+    viewId = { "automaton" Rgb 180 140 55 255 }
+    automatonSlots = 3
+    attr = {
+      DAMAGE 12
+      DEFENSE 20
+    }
+    body = {
+      type = NonHumanoid LARGE
+      material = WOOD
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+    }
+    permanentEffects = {
+      IMMOBILE 1
+      SPEED 1
+    }
+    name = {
+      name = "wooden automaton"
+    }
+  }
+"AUTODRONE_CORPUS_WOOD" inherit "AUTOMATON_CORPUS_WOOD"
+{
+  viewId = { "autodrone_3" Rgb 180 140 55 255 }
+  automatonSlots = 1
+    attr = {
+      DAMAGE 5
+      DEFENSE 8
+    }
+    permanentEffects = {
+      SPEED 2
+      FLYING 1
+    }
+    body = {
+      type = NonHumanoid SMALL
+      material = WOOD
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+      intrinsicAttacks = {
+        TORSO {{
+          isExtraAttack = true
+          itemType = { Intrinsic { "fist_attack" } "bodyslam" 2 {
+            attackType = HIT
+            meleeAttackAttr = DAMAGE
+            attackMsg = THRUST } }}}
+      }
+    }
+    name = {
+      name = "wooden autodrone"
+    }
+}
+"AUTOMINITON_CORPUS_WOOD" inherit "AUTOMATON_CORPUS_WOOD"
+{
+    viewId = { "automaton_worker" Rgb 180 140 55 255 }
+    automatonSlots = 2
+    attr = {
+      DAMAGE 6
+      DEFENSE 10
+    }
+    body = {
+      type = NonHumanoid MEDIUM
+      material = WOOD
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+    }
+    name = {
+      name = "wooden autominiton"
+    }
+}
+"DREADNAUGHT_CORPUS_WOOD" inherit "AUTOMATON_CORPUS_WOOD"
+  {
+    viewId = { "dreadnaught" Rgb 180 140 55 255 }
+    automatonSlots = 7
+    attr = {
+      DAMAGE 18
+      DEFENSE 30
+    }
+    body = {
+      type = NonHumanoid HUGE
+      material = WOOD
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+    }
+    permanentEffects = {
+      IMMOBILE 1
+      # He has corpses inside him. Not pleasant to be around.
+      BAD_BREATH 1
+    }
+    name = {
+      name = "wooden dreadnaught"
+    }
+    spells = { "berserk mode" }
+  }
+
+"AUTOMATON_CORPUS_STONE" inherit "AUTOMATON_CORPUS_WOOD"
+  {
+    viewId = { "automaton" Rgb 181 181 129 255 }
+    automatonSlots = 3
+    attr = {
+      DAMAGE 18
+      DEFENSE 26
+    }
+    body = {
+      type = NonHumanoid LARGE
+      material = ROCK
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+    }
+    permanentEffects = {
+      IMMOBILE 1
+      SLOWED 1
+    }
+    name = {
+      name = "stone automaton"
+    }
+  }
+"AUTODRONE_CORPUS_STONE" inherit "AUTOMATON_CORPUS_STONE"
+{
+  viewId = { "autodrone_3" Rgb 181 181 129 255 }
+  automatonSlots = 1
+    attr = {
+      DAMAGE 7
+      DEFENSE 10
+    }
+    permanentEffects = {
+      FLYING 1
+    }
+    body = {
+      type = NonHumanoid SMALL
+      material = ROCK
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+      intrinsicAttacks = {
+        TORSO {{
+          isExtraAttack = true
+          itemType = { Intrinsic { "fist_attack" } "bodyslam" 3 {
+            attackType = HIT
+            meleeAttackAttr = DAMAGE
+            attackMsg = THRUST } }}}
+      }
+    }
+    name = {
+      name = "stone autodrone"
+    }
+}
+"AUTOMINITON_CORPUS_STONE" inherit "AUTOMATON_CORPUS_STONE"
+{
+    viewId = { "automaton_worker" Rgb 181 181 129 255 }
+    automatonSlots = 2
+    attr = {
+      DAMAGE 9
+      DEFENSE 13
+    }
+    body = {
+      type = NonHumanoid MEDIUM
+      material = ROCK
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+    }
+    name = {
+      name = "stone autominiton"
+    }
+}
+"LIGHT_AUTOMATON_CORPUS_STONE" inherit "AUTOMATON_CORPUS_STONE"
+  {
+    viewId = { "automaton_light" Rgb 181 181 129 255 }
+    attr = append {
+      DEFENSE 20
+    }
+    permanentEffects = append { SPEED 1 }
+    name = {
+      name = "light stone automaton"
+    }
+  }
+"DREADNAUGHT_CORPUS_STONE" inherit "AUTOMATON_CORPUS_STONE"
+  {
+    viewId = { "dreadnaught" Rgb 181 181 129 255 }
+    automatonSlots = 7
+    attr = {
+      DAMAGE 27
+      DEFENSE 39
+    }
+    body = {
+      type = NonHumanoid HUGE
+      material = ROCK
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+    }
+    permanentEffects = {
+      IMMOBILE 1
+      # He has corpses inside him. Not pleasant to be around.
+      BAD_BREATH 1
+    }
+    name = {
+      name = "stone dreadnaught"
+    }
+    spells = { "berserk mode" }
+  }
+
+"AUTOMATON_CORPUS_IRON" modify
+  {
+    permanentEffects = {
+      IMMOBILE 1
+    }
+  }
+"AUTODRONE_CORPUS_IRON" inherit "AUTOMATON_CORPUS_IRON"
+  {
+    viewId = { "autodrone_3" Rgb 140 148 148 255 }
+    automatonSlots = 1
+    attr = {
+      DAMAGE 10
+      DEFENSE 12
+    }
+    permanentEffects = {
+      SPEED 1
+      FLYING 1
+    }
+    body = {
+      type = NonHumanoid SMALL
+      material = IRON
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+      intrinsicAttacks = {
+        TORSO {{
+          isExtraAttack = true
+          itemType = { Intrinsic { "fist_attack" } "bodyslam" 4 {
+            attackType = HIT
+            meleeAttackAttr = DAMAGE
+            attackMsg = THRUST } }}}
+      }
+    }
+    name = {
+      name = "iron autodrone"
+    }
+  }
+"AUTOMINITON_CORPUS_IRON" inherit "AUTOMATON_CORPUS_IRON"
+  {
+    viewId = { "automaton_worker" Rgb 140 148 148 255 }
+    automatonSlots = 2
+    attr = {
+      DAMAGE 13
+      DEFENSE 15
+    }
+    body = {
+      type = NonHumanoid MEDIUM
+      material = IRON
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+    }
+    name = {
+      name = "iron autominiton"
+    }
+  }
+"HEAVY_AUTOMATON_CORPUS_IRON" modify append
+  {
+    viewId = { "automaton_heavy" Rgb 140 148 148 255 }
+  }
+"LIGHT_AUTOMATON_CORPUS_IRON" modify append
+  {
+    viewId = { "automaton_light" Rgb 140 148 148 255 }
+  }
+"DREADNAUGHT_CORPUS_IRON" inherit "AUTOMATON_CORPUS_IRON"
+  {
+    viewId = { "dreadnaught" Rgb 140 148 148 255 }
+    automatonSlots = 7
+    attr = {
+      DAMAGE 37
+      DEFENSE 43
+    }
+    body = {
+      type = NonHumanoid HUGE
+      material = ROCK
+      bodyParts = {
+        BACK 1
+        TORSO 1
+      }
+    }
+    permanentEffects = {
+      IMMOBILE 1
+      # He has corpses inside him. Not pleasant to be around.
+      BAD_BREATH 1
+    }
+    name = {
+      name = "iron dreadnaught"
+    }
+    spells = { "berserk mode" }
+  }
+
+"ROGUE_DREADNAUGHT" inherit "DREADNAUGHT_CORPUS_IRON"
+{
+    permanentEffects = {
+      # He has corpses inside him. Not pleasant to be around.
+      BAD_BREATH 1
+    }
+}
+
+# GOLD AUTOMATON 228 214 20

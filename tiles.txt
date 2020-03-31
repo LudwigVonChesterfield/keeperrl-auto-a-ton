@@ -1,0 +1,24 @@
+{ "iron_rifle" "-" ColorId LIGHT_GRAY }
+{ "ada_rifle" "-" ColorId GRAY }
+{ "flame_rifle" "-" ColorId RED }
+
+{ "autodrone_1" "d" ColorId GRAY }
+{ "autodrone_2" "d" ColorId GRAY }
+{ "autodrone_3" "d" ColorId GRAY }
+{ "autodrone_4" "d" ColorId GRAY }
+{ "autodrone_5" "@" ColorId GRAY }
+{ "autodrone_6" "@" ColorId GRAY }
+
+{ "automaton_light" "a" ColorId LIGHT_GRAY }
+{ "automaton_heavy" "A" ColorId LIGHT_GRAY }
+{ "dreadnaught" "D" ColorId LIGHT_GRAY}
+
+{ "gnome_rogue" "g" ColorId GREEN }
+{ "gnome_overseer" "g" ColorId BLUE }
+{ "gnome_techpriest" "g" ColorId RED }
+{ "gnome_exalted_techpriest" "g" ColorId YELLOW }
+
+{ "bullet" "." ColorId DARK_GRAY}
+{ "cannonball" "O" ColorId DARK_GRAY }
+
+{ "harpy_feathers" "f" ColorId GRAY}

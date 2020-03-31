@@ -1,0 +1,11 @@
+"techpriestry" SPELL
+  {
+    "repair automaton" 1
+    "advanced automata repair" 1
+    "rapid drone construction" 1
+	"overdrive" 2
+	"defense protocols" 3
+	"attack protocols" 3
+	"rapid automaton construction" 4
+    "animate weapons" 5
+  }

@@ -1,0 +1,81 @@
+"overdrive"
+{
+  symbol = "🔓"
+  effect = Filter AUTOMATON Chain { Lasting DAM_BONUS Lasting DEF_BONUS Lasting SPEED Lasting MELEE_RESISTANCE }
+  range = 1
+  targetSelf = true
+  cooldown = 30
+  sound = TRAP_ARMING
+  message = "put automaton into overdrive" "puts automaton into overdrive"
+}
+"defense protocols"
+{
+  symbol = "🛡️"
+  effect = Area 3 Filter AUTOMATON Chain { Lasting DEF_BONUS Lasting MELEE_RESISTANCE }
+  cooldown = 60
+  sound = SPELL_DEX_BONUS
+  message = "activate defense protocols" "activates defense protocols"
+}
+"attack protocols"
+{
+  symbol = "⚔️"
+  effect = Area 3 Filter AUTOMATON Chain { Lasting DAM_BONUS Lasting SPEED }
+  cooldown = 60
+  sound = SPELL_STR_BONUS
+  message = "activate attack protocols" "activates attack protocols"
+}
+"advanced automata repair"
+{
+  symbol = "🔧"
+  effect = Area 3 Filter AUTOMATON RegrowBodyPart 10
+  cooldown = 30
+  sound = TRAP_ARMING
+  message = "repair automatons" "repairs automatons"
+}
+"rapid drone construction"
+{
+  symbol = "🚁"
+  effect = Chain {
+    Summon "TORCH_AUTODRONE" { 1 } 200
+    ChooseRandom {
+      Summon "REPAIR_AUTODRONE" { 3 } 200
+      Summon "ACID_AUTODRONE" { 3 } 200
+      Summon "CANNONBALL_AUTODRONE" { 3 } 200
+    }
+  }
+  cooldown = 200
+  sound = TRAP_ARMING
+  message = "construct autodrones" "constructs autodrones"
+}
+"rapid automaton construction"
+{
+  symbol = "🚁"
+  effect = Chain {
+    ChooseRandom {
+      Summon "REPAIR_AUTODRONE" { 3 } 200
+      Summon "ACID_AUTODRONE" { 3 } 200
+      Summon "CANNONBALL_AUTODRONE" { 3 } 200
+    }
+  }
+  cooldown = 200
+  sound = TRAP_ARMING
+  message = "construct automaton" "constructs automatons"
+}
+"shoot cannonball"
+{
+  symbol = "💣"
+  effect = Damage RANGED_DAMAGE CRUSH
+  range = 5
+  cooldown = 20
+  projectileViewId = {"cannonball"}
+  message = "shoot a cannonball" "shoots a cannonball"
+}
+
+"berserk mode"
+{
+  symbol = "👹"
+  effect = Chain { Lasting DAM_BONUS Lasting RAGE Lasting DEF_BONUS Lasting MELEE_RESISTANCE Lasting SPEED Lasting BLEEDING }
+  cooldown = 300
+  sound = SPELL_BLAST
+  message = "enter berserk mode" "goes berserk"
+}
