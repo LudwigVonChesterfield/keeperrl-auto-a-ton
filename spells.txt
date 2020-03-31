@@ -27,11 +27,13 @@
 "advanced automata repair"
 {
   symbol = "🔧"
-  effect = Area 3 Filter AUTOMATON RegrowBodyPart 10
+  #GD: better healing / should make a main pull to keeperrl to add Automation as a flesh type to allow heal.
+  effect = Area 3 Filter AUTOMATON Filter ALLY RegrowBodyPart 10
   cooldown = 30
   sound = TRAP_ARMING
   message = "repair automatons" "repairs automatons"
 }
+
 "rapid drone construction"
 {
   symbol = "🚁"
@@ -78,4 +80,15 @@
   cooldown = 300
   sound = SPELL_BLAST
   message = "enter berserk mode" "goes berserk"
+}
+
+#GD ----------------------------------------------------------------------------------------
+
+#can also be made into a touch attack 
+"Explosive Overclock"
+{
+symbol = "X"
+cooldown = 1
+targetSelf = true
+effect =  Chain { Area 5 Chain{Damage SPELL_DAMAGE SPELL Blast} Area 3 PlaceFurniture "FIRE_WALL" Suicide DIE}
 }
