@@ -110,7 +110,6 @@
     name = {
       name = "exalted gnome techpriest"
     }
-    spells = { "repair automaton" "advanced automata repair" "rapid drone construction"}
     spellSchools = { "techpriestry" }
     maxLevelIncrease = {
       MELEE 10
@@ -125,6 +124,7 @@
 "AUTODRONE" inherit "AUTOMATON"
   {
     viewId = { "autodrone_3" Rgb 204 202 196 255 }
+    automatonSlots = 1
     attr = {
       DAMAGE 10
       DEFENSE 12
@@ -146,13 +146,16 @@
           itemType = { Intrinsic { "fist_attack" } "bodyslam" 4 {
             attackType = HIT
             meleeAttackAttr = DAMAGE
-            attackMsg = THRUST } }}}
+            attackMsg = THRUST }
+          }
+        }}
       }
     }
     name = {
       name = "iron autodrone"
     }
   }
+
 "TORCH_AUTODRONE" inherit "AUTODRONE"
 {
   viewId = { "autodrone_6" Rgb 204 202 196 255 }
@@ -160,6 +163,31 @@
     DAMAGE 10
     DEFENSE 14
   }
+    body = {
+      type = NonHumanoid SMALL
+      material = IRON
+      bodyParts = {
+        BACK 1
+        TORSO 1
+        ARM 2
+      }
+      intrinsicAttacks = {
+        TORSO {{
+          isExtraAttack = true
+          itemType = { Intrinsic { "fist_attack" } "bodyslam" 4 {
+            attackType = HIT
+            meleeAttackAttr = DAMAGE
+            attackMsg = THRUST } }}}
+        ARM {{
+          itemType = {
+            Intrinsic { "fist_attack" } "torch" 5 {
+              attackType = HIT
+              attackMsg = SWING
+            } 
+          }
+        }}
+      }
+    }
   permanentEffects = {
     LIGHT_SOURCE 1
   }
@@ -195,6 +223,28 @@
   }
   spells = { "shoot cannonball" }
 }
+# UNUSED
+"TORCH2_AUTODRONE" inherit "AUTODRONE"
+{
+  viewId = { "autodrone_6" Rgb 204 202 196 255 }
+  # addAutomatonPart = { {Simple "TorchAutomatonArmsWood"} }
+}
+"REPAIR2_AUTODRONE" inherit "AUTODRONE"
+{
+  viewId = { "autodrone_4" Rgb 204 202 196 255 }
+  # addAutomatonPart = { {Simple "RepairAutomatonArmsIron"} }
+}
+"ACID2_AUTODRONE" inherit "AUTODRONE"
+{
+  viewId = { "autodrone_1" Rgb 204 202 196 255 }
+  # addAutomatonPart = { {Simple "AcidHeadIron"} }
+}
+"CANNONBALL2_AUTODRONE" inherit "AUTODRONE"
+{
+  viewId = { "autodrone_5" Rgb 204 202 196 255 }
+  # addAutomatonPart = { {Simple "CannonballAutomatonArmsIron"} }
+}
+
 
 "AUTOMATON_CORPUS_WOOD" modify
   {
@@ -275,7 +325,7 @@
 "DREADNAUGHT_CORPUS_WOOD" inherit "AUTOMATON_CORPUS_WOOD"
   {
     viewId = { "dreadnaught" Rgb 180 140 55 255 }
-    automatonSlots = 7
+    automatonSlots = 6
     attr = {
       DAMAGE 18
       DEFENSE 30
@@ -388,7 +438,7 @@
 "DREADNAUGHT_CORPUS_STONE" inherit "AUTOMATON_CORPUS_STONE"
   {
     viewId = { "dreadnaught" Rgb 181 181 129 255 }
-    automatonSlots = 7
+    automatonSlots = 6
     attr = {
       DAMAGE 27
       DEFENSE 39
@@ -405,6 +455,7 @@
       IMMOBILE 1
       # He has corpses inside him. Not pleasant to be around.
       BAD_BREATH 1
+      SLOWED 2
     }
     name = {
       name = "stone dreadnaught"
@@ -481,7 +532,7 @@
 "DREADNAUGHT_CORPUS_IRON" inherit "AUTOMATON_CORPUS_IRON"
   {
     viewId = { "dreadnaught" Rgb 140 148 148 255 }
-    automatonSlots = 7
+    automatonSlots = 6
     attr = {
       DAMAGE 37
       DEFENSE 43
@@ -498,6 +549,7 @@
       IMMOBILE 1
       # He has corpses inside him. Not pleasant to be around.
       BAD_BREATH 1
+      SLOWED 1
     }
     name = {
       name = "iron dreadnaught"
@@ -507,10 +559,12 @@
 
 "ROGUE_DREADNAUGHT" inherit "DREADNAUGHT_CORPUS_IRON"
 {
-    permanentEffects = {
-      # He has corpses inside him. Not pleasant to be around.
-      BAD_BREATH 1
-    }
+    #addAutomatonPart = {
+    #  {Simple "CannonballAutomatonArmsIron"}
+    #  {Simple "RepairAutomatonArmsIron"}
+    #  {Simple "CannonballAutomatonArmsIron"}
+    #  {Simple "AutomatonLegsIron"}
+    #}
 }
 
 # GOLD AUTOMATON 228 214 20

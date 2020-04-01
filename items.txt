@@ -20,7 +20,12 @@
     automatonPart = {
       Description "Grants a melee attack and lights up the way."
       Chain {
-        AddBodyPart ARM 2 { Intrinsic { "fist_attack" } "torch" 5 { attackType = HIT attackMsg = SWING } }
+        AddBodyPart ARM 2 {
+          Intrinsic { "fist_attack" } "torch" 5 {
+            attackType = HIT
+            attackMsg = SWING
+          } 
+        }
       }
     }
   }
