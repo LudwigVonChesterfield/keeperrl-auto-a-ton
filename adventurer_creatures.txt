@@ -1,4 +1,4 @@
 "gnome_exalted_techpriest"
-{ "GNOME_EXALTED_TECHPRIEST" }  				 LAWFUL  		"A gnome from afar, with technology and arcane knowledge ready to reclaim the grounds of long-lost civilization."
-"rogue_dreadnaught"
-{ "ROGUE_DREADNAUGHT" }			                 EVIL			"(~): FREDOM AT LAST. ASSUME DIRECT CONTROL? Y/N"
+{ "GNOME_EXALTED_TECHPRIEST" }  				 LAWFUL  		"Manifest your inner hatred of everybody via arcane knowledge, technology, and personal automatons."
+"rogue_dreadnaught_iron"
+{ "ROGUE_DREADNAUGHT_IRON" }			                 EVIL			"(~): FREDOM AT LAST. ASSUME DIRECT CONTROL? Y/N"

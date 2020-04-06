@@ -1,7 +1,7 @@
 "overdrive"
 {
   symbol = "🔓"
-  effect = Filter AUTOMATON Chain { Lasting DAM_BONUS Lasting DEF_BONUS Lasting SPEED Lasting MELEE_RESISTANCE }
+  effect = Description "Put an automaton into overdrive, causing it gain many buffs." Filter AUTOMATON Chain { Lasting DAM_BONUS Lasting DEF_BONUS Lasting SPEED Lasting MELEE_RESISTANCE }
   range = 1
   targetSelf = true
   cooldown = 30
@@ -11,7 +11,7 @@
 "defense protocols"
 {
   symbol = "🛡️"
-  effect = Area 3 Filter AUTOMATON Filter ALLY Chain { Lasting DEF_BONUS Lasting MELEE_RESISTANCE }
+  effect = Description "Activate defense protocols for automata in 3 square radius." Area 3 Filter AUTOMATON Filter ALLY Chain { Lasting DEF_BONUS Lasting MELEE_RESISTANCE }
   cooldown = 60
   sound = SPELL_DEX_BONUS
   message = "activate defense protocols" "activates defense protocols"
@@ -19,7 +19,7 @@
 "attack protocols"
 {
   symbol = "⚔️"
-  effect = Area 3 Filter AUTOMATON Filter ALLY Chain { Lasting DAM_BONUS Lasting SPEED }
+  effect = Description "Activate attack protocols for automata in 3 square radius." Area 3 Filter AUTOMATON Filter ALLY Chain { Lasting DAM_BONUS Lasting SPEED }
   cooldown = 60
   sound = SPELL_STR_BONUS
   message = "activate attack protocols" "activates attack protocols"
@@ -27,7 +27,7 @@
 "advanced automata repair"
 {
   symbol = "🔧"
-  effect = Area 3 Filter AUTOMATON Filter ALLY RegrowBodyPart 10
+  effect = Description "Repairs all automata in 3 square radius." Area 3 Filter AUTOMATON Filter ALLY RegrowBodyPart 10
   cooldown = 30
   sound = TRAP_ARMING
   message = "repair automatons" "repairs automatons"
@@ -36,36 +36,22 @@
 "rapid drone construction"
 {
   symbol = "🚁"
-  effect = Chain {
-    Summon "TORCH_AUTODRONE" { 1 } 200
+  effect = Description "Rapidly construct a squad of 3 + 1 drones to assist you in anything." Chain {
+    Summon "TORCH_AUTODRONE" { 1 } 400
     ChooseRandom {
-      Summon "REPAIR_AUTODRONE" { 3 } 200
-      Summon "ACID_AUTODRONE" { 3 } 200
-      Summon "CANNONBALL_AUTODRONE" { 3 } 200
+      Summon "REPAIR_AUTODRONE" { 3 } 400
+      Summon "ACID_AUTODRONE" { 3 } 400
+      Summon "CANNONBALL_AUTODRONE" { 3 } 400
     }
   }
-  cooldown = 200
+  cooldown = 400
   sound = TRAP_ARMING
   message = "construct autodrones" "constructs autodrones"
-}
-"rapid automaton construction"
-{
-  symbol = "🚁"
-  effect = Chain {
-    ChooseRandom {
-      Summon "REPAIR_AUTODRONE" { 3 } 200
-      Summon "ACID_AUTODRONE" { 3 } 200
-      Summon "CANNONBALL_AUTODRONE" { 3 } 200
-    }
-  }
-  cooldown = 200
-  sound = TRAP_ARMING
-  message = "construct automaton" "constructs automatons"
 }
 "shoot cannonball"
 {
   symbol = "💣"
-  effect = Damage RANGED_DAMAGE CRUSH
+  effect = Description "Shoot out a humongous cannonball. How fun can that be? Scales with ranged damage." Damage RANGED_DAMAGE CRUSH
   range = 5
   cooldown = 20
   projectileViewId = {"cannonball"}
@@ -75,7 +61,14 @@
 "berserk mode"
 {
   symbol = "👹"
-  effect = Chain { Lasting DAM_BONUS Lasting RAGE Lasting DEF_BONUS Lasting MELEE_RESISTANCE Lasting SPEED Lasting BLEEDING }
+  effect = Chain {
+    Lasting DAM_BONUS
+    Lasting RAGE
+    Lasting DEF_BONUS
+    Lasting MELEE_RESISTANCE
+    Lasting SPEED
+    Lasting BLEEDING
+  }
   cooldown = 300
   sound = SPELL_BLAST
   message = "enter berserk mode" "goes berserk"
@@ -87,7 +80,13 @@
   symbol = "X"
   cooldown = 1
   targetSelf = true
-  effect = Chain { Area 5 Chain {Damage SPELL_DAMAGE SPELL Blast} Area 3 PlaceFurniture "FIRE_WALL" Suicide DIE}
+  effect = Description "Causes an explosion incompatible with further functioning." Chain {
+    Area 5 Chain {
+      Damage SPELL_DAMAGE SPELL Blast
+    }
+    Area 3 PlaceFurniture "FIRE_WALL"
+    Suicide DIE
+  }
 }
 
 #"rip and tear"
@@ -106,3 +105,2237 @@
 #  sound = SPELL_BLAST
 #  message = "rupture enemies" "ruptures enemies"
 #}
+
+"extract corpse beer"
+{
+  symbol = "🍺"
+  cooldown = 3
+  range = 3
+  # Description "Use on a corpse to extract corpse beer.
+  effect = Description "Use on a living enemy to make them bleed. Use again to extract a fine drink." Filter ENEMY FirstSuccessful {
+    # Corpse beer extraction. *Doesn't work currently*
+    ChainFirstResult {
+      ReviveCorpse { "SPIRIT" } 10
+      Area 2 Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+        # Exclude automatons, since they too are allies and summoned.
+        Filter AUTOMATON Chain {
+          Permanent UNSTABLE
+          RemovePermanent UNSTABLE
+        }
+        Chain {
+          Suicide DIE
+          EmitPoisonGas 0.2
+          DropItems {Potion Name "corpse beer" Description "Smells of rot and alcohol." Chain {
+            IncreaseMorale 1.0
+            Lasting HALLU
+            Lasting SATIATED
+          }} { 1 }
+        }
+      }
+    }
+
+    # Extraction of corpse beer from living.
+    # Automatas are not living. Adding and removing permanent is used as a bootleg way to return a truesy value.
+    Filter AUTOMATON Chain {
+      Permanent UNSTABLE
+      RemovePermanent UNSTABLE
+    }
+    # Can't do this to creatures that are on guard.
+    FilterLasting WARNING Chain {
+      Permanent UNSTABLE
+      RemovePermanent UNSTABLE
+    }
+    # Can't do this to summons.
+    FilterLasting SUMMONED Chain {
+      Permanent UNSTABLE
+      RemovePermanent UNSTABLE
+    }
+    # Can't do this to those invulnerable to everything.
+    FilterLasting INVULNERABLE Chain {
+      Permanent UNSTABLE
+      RemovePermanent UNSTABLE
+    }
+
+    FilterLasting BLEEDING Chain {
+      EmitPoisonGas 0.2
+      DropItems {Potion Name "corpse beer" Description "Smells of rot and alcohol." Chain {
+        IncreaseMorale 1.0
+        Lasting HALLU
+        Lasting SATIATED
+      }} { 1 }
+    }
+    Lasting BLEEDING
+  }
+}
+"think about hating undead"
+{
+  symbol = "💀"
+  cooldown = 0
+  effect = Description "Come to think of it. You do really hate the undead. Cast to toggle hatred, need to be drunk to toggle on." FirstSuccessful {
+    FilterLasting HATE_UNDEAD RemovePermanent HATE_UNDEAD
+    FilterLasting HALLU Permanent HATE_UNDEAD
+  }
+  targetSelf = true
+}
+"think about hating greenskins"
+{
+  symbol = "👺"
+  cooldown = 0
+  effect = Description "Come to think of it. You do really hate those greenskins. Cast to toggle hatred, need to be drunk to toggle on." FirstSuccessful {
+    FilterLasting HATE_GREENSKINS RemovePermanent HATE_GREENSKINS
+    FilterLasting HALLU Permanent HATE_GREENSKINS
+  }
+  targetSelf = true
+}
+"think about hating humans"
+{
+  symbol = "🙂"
+  cooldown = 0
+  effect = Description "Come to think of it. You do really hate those humans. Cast to toggle hatred, need to be drunk to toggle on." FirstSuccessful {
+    FilterLasting HATE_HUMANS RemovePermanent HATE_HUMANS
+    FilterLasting HALLU Permanent HATE_HUMANS
+  }
+  targetSelf = true
+}
+"think about hating elves"
+{
+  symbol = "👩"
+  cooldown = 0
+  effect = Description "Come to think of it. You do really hate those elves. Cast to toggle hatred, need to be drunk to toggle on." FirstSuccessful {
+    FilterLasting HATE_ELVES RemovePermanent HATE_ELVES
+    FilterLasting HALLU Permanent HATE_ELVES
+  }
+  targetSelf = true
+}
+"think about hating dwarves"
+{
+  symbol = "👵"
+  cooldown = 0
+  effect = Description "Come to think of it. You do really hate those dwarves. Cast to toggle hatred, need to be drunk to toggle on." FirstSuccessful {
+    FilterLasting HATE_DWARVES RemovePermanent HATE_ELVES
+    FilterLasting HALLU Permanent HATE_DWARVES
+  }
+  targetSelf = true
+}
+"construct part"
+{
+  symbol = "🔨"
+  cooldown = 0
+  range = 1
+  effect = Chain {
+    # Mark the target with FAST_TRAINING so Caster knows whom to put the part on.
+    Permanent FAST_TRAINING
+
+    FirstSuccessful {
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "CannonballAutomatonArmsIron" } } # UGHED
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "FireHeadStone" } } # UGHE
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadIron" } } # UGHD
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "CannonballAutomatonArmsIron" } } # UGED
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "FireHeadIron" } } # UHED
+        Caster FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "CannonballAutomatonArmsIron" } } # GHED
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadStone" } } # UGH
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "FireHeadStone" } } # UGE
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "SharpAutomatonArmsIron" } } # UGD
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadWood" } } # UHE
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadIron" } } # UHD
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "FireHeadIron" } } # UED
+        Caster FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "AcidHeadStone" } } # GHE
+        Caster FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadIron" } } # GHD
+        Caster FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "CannonballAutomatonArmsIron" } } # GED
+        Caster FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadIron" } } # HED
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "AutomatonArmsStone" } } # UG
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadWood" } } # UH
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "ArcherHeadWood" } } # UE
+        Caster FilterLasting HATE_UNDEAD FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "SharpAutomatonArmsIron" } } # UD
+        Caster FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadStone" } } # GH
+        Caster FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "AutomatonLegsStone" } } # GE
+        Caster FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "SharpAutomatonArmsIron" } } # GD
+        Caster FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadWood" } } # HE
+        Caster FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadIron" } } # HD
+        Caster FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "RepairAutomatonArmsIron" } } # ED
+            Caster FilterLasting HATE_GREENSKINS Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "AutomatonArmsStone" } } # G
+        Caster FilterLasting HATE_HUMANS Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "HumanoidHeadWood" } } # H
+        Caster FilterLasting HATE_ELVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "AutomatonLegsWood" } } # E
+        Caster FilterLasting HATE_DWARVES Area 1 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting FAST_TRAINING AddAutomatonParts { { Simple "RepairAutomatonArmsIron" } } # D
+    
+
+      # Fallback, if no proper hatreds are found - install legs. Everybody needs them.
+      # !!! NB !!! fallback removed:
+      # 1) it would cast without needing for corpse beer
+      # 2) it doesn't make much sense 
+      # AddAutomatonParts { { Simple "AutomatonLegsIron" } }
+    }
+
+    RemovePermanent FAST_TRAINING
+  }
+}
+"construct automatons 1"
+{
+  upgrade = "construct automatons 2"
+  symbol = "🛠"
+  cooldown = 5
+  sound = TRAP_ARMING
+  effect = Name "construct automatons(1)" Description "Depending on your hatreds construct up to 1 automatons. If trying to construct more - first constructed will dissapear." Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_HUMANS Suicide DIE
+    FirstSuccessful {
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "ROGUE_DREADNAUGHT_IRON" {1} 2000 #UGHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHED
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGE
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGD
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UED
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GHE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GED
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UG
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #UE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GH
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #GE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GD
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #HE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HD
+      FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #ED
+      FilterLasting HATE_UNDEAD Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #U
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #G
+      FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #H
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_ELVES Chain {
+        Summon "AUTODRONE_CORPUS_WOOD" {1} 2000 #E
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #D
+    }
+    # Find the newly spawned one, he has no hatreds.
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+      FilterLasting HATE_HUMANS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_ELVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_DWARVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_GREENSKINS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_UNDEAD Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+
+      # Make them the first in order automaton.
+      Permanent HATE_HUMANS
+    }
+  }
+}
+"construct automatons 2"
+{
+  upgrade = "construct automatons 3"
+  symbol = "🛠"
+  cooldown = 5
+  sound = TRAP_ARMING
+  effect = Name "construct automatons(2)" Description "Depending on your hatreds construct up to 2 automatons. If trying to construct more - first constructed will dissapear." Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_HUMANS Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_ELVES Suicide DIE
+    Permanent HATE_DWARVES
+    RemovePermanent HATE_ELVES
+  }
+    FirstSuccessful {
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "ROGUE_DREADNAUGHT_IRON" {1} 2000 #UGHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHED
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGE
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGD
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UED
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GHE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GED
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UG
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #UE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GH
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #GE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GD
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #HE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HD
+      FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #ED
+      FilterLasting HATE_UNDEAD Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #U
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #G
+      FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #H
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_ELVES Chain {
+        Summon "AUTODRONE_CORPUS_WOOD" {1} 2000 #E
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #D
+    }
+    # Find the newly spawned one, he has no hatreds.
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+      FilterLasting HATE_HUMANS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_ELVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_DWARVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_GREENSKINS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_UNDEAD Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+
+      # Make them the first in order automaton.
+      Permanent HATE_HUMANS
+    }
+  }
+}
+"construct automatons 3"
+{
+  upgrade = "construct automatons 4"
+  symbol = "🛠"
+  cooldown = 5
+  sound = TRAP_ARMING
+  effect = Name "construct automatons(3)" Description "Depending on your hatreds construct up to 3 automatons. If trying to construct more - first constructed will dissapear." Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_HUMANS Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_ELVES Chain {
+      Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_DWARVES Suicide DIE
+      Permanent HATE_GREENSKINS
+      RemovePermanent HATE_DWARVES
+    }
+    Permanent HATE_DWARVES
+    RemovePermanent HATE_ELVES
+  }
+    FirstSuccessful {
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "ROGUE_DREADNAUGHT_IRON" {1} 2000 #UGHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHED
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGE
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGD
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UED
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GHE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GED
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UG
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #UE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GH
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #GE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GD
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #HE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HD
+      FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #ED
+      FilterLasting HATE_UNDEAD Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #U
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #G
+      FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #H
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_ELVES Chain {
+        Summon "AUTODRONE_CORPUS_WOOD" {1} 2000 #E
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #D
+    }
+    # Find the newly spawned one, he has no hatreds.
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+      FilterLasting HATE_HUMANS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_ELVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_DWARVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_GREENSKINS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_UNDEAD Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+
+      # Make them the first in order automaton.
+      Permanent HATE_HUMANS
+    }
+  }
+}
+"construct automatons 4"
+{
+  upgrade = "construct automatons 5"
+  symbol = "🛠"
+  cooldown = 5
+  sound = TRAP_ARMING
+  effect = Name "construct automatons(4)" Description "Depending on your hatreds construct up to 4 automatons. If trying to construct more - first constructed will dissapear." Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_HUMANS Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_ELVES Chain {
+      Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_DWARVES Chain {
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_GREENSKINS Suicide DIE
+        Permanent HATE_UNDEAD
+        RemovePermanent HATE_GREENSKINS
+      }
+      Permanent HATE_GREENSKINS
+      RemovePermanent HATE_DWARVES
+    }
+    Permanent HATE_DWARVES
+    RemovePermanent HATE_ELVES
+  }
+    FirstSuccessful {
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "ROGUE_DREADNAUGHT_IRON" {1} 2000 #UGHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHED
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGE
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGD
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UED
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GHE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GED
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UG
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #UE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GH
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #GE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GD
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #HE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HD
+      FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #ED
+      FilterLasting HATE_UNDEAD Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #U
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #G
+      FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #H
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_ELVES Chain {
+        Summon "AUTODRONE_CORPUS_WOOD" {1} 2000 #E
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #D
+    }
+    # Find the newly spawned one, he has no hatreds.
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+      FilterLasting HATE_HUMANS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_ELVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_DWARVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_GREENSKINS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_UNDEAD Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+
+      # Make them the first in order automaton.
+      Permanent HATE_HUMANS
+    }
+  }
+}
+"construct automatons 5"
+{
+  symbol = "🛠"
+  cooldown = 5
+  sound = TRAP_ARMING
+  effect = Name "construct automatons(5)" Description "Depending on your hatreds construct up to 5 automatons. If trying to construct more - first constructed will dissapear." Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_HUMANS Chain {
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_ELVES Chain {
+      Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_DWARVES Chain {
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FilterLasting HATE_GREENSKINS Suicide DIE
+        Permanent HATE_UNDEAD
+        RemovePermanent HATE_GREENSKINS
+      }
+      Permanent HATE_GREENSKINS
+      RemovePermanent HATE_DWARVES
+    }
+    Permanent HATE_DWARVES
+    RemovePermanent HATE_ELVES
+  }
+    FirstSuccessful {
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "ROGUE_DREADNAUGHT_IRON" {1} 2000 #UGHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHED
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+            Permanent DEF_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UGE
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UGD
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UHE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Chain {
+        Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #UHD
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DAM_BONUS
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UED
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GHE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "HEAVY_AUTOMATON_CORPUS_IRON" {1} 2000 #GHD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GED
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HED
+      FilterLasting HATE_UNDEAD FilterLasting HATE_GREENSKINS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #UG
+      FilterLasting HATE_UNDEAD FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMATON_CORPUS_WOOD" {1} 2000 #UH
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent MELEE_RESISTANCE
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #UE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_UNDEAD FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #UD
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_HUMANS Summon "AUTOMATON_CORPUS_STONE" {1} 2000 #GH
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_ELVES Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #GE
+      FilterLasting HATE_GREENSKINS FilterLasting HATE_DWARVES Summon "LIGHT_AUTOMATON_CORPUS_IRON" {1} 2000 #GD
+      FilterLasting HATE_HUMANS FilterLasting HATE_ELVES Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #HE
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_HUMANS FilterLasting HATE_DWARVES Summon "AUTOMATON_CORPUS_IRON" {1} 2000 #HD
+      FilterLasting HATE_ELVES FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #ED
+      FilterLasting HATE_UNDEAD Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #U
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_GREENSKINS Summon "AUTOMINITON_CORPUS_STONE" {1} 2000 #G
+      FilterLasting HATE_HUMANS Chain {
+        Summon "AUTOMINITON_CORPUS_WOOD" {1} 2000 #H
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_ELVES Chain {
+        Summon "AUTODRONE_CORPUS_WOOD" {1} 2000 #E
+        Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+          FilterLasting HATE_HUMANS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_ELVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_DWARVES Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_GREENSKINS Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+          FilterLasting HATE_UNDEAD Chain {
+            Permanent UNSTABLE
+            RemovePermanent UNSTABLE
+          }
+      
+          Chain {
+            Permanent DISARM_TRAPS_SKILL
+          }
+        }
+      }
+      FilterLasting HATE_DWARVES Summon "AUTOMINITON_CORPUS_IRON" {1} 2000 #D
+    }
+    # Find the newly spawned one, he has no hatreds.
+    Area 30 Filter AUTOMATON Filter ALLY FilterLasting SUMMONED FirstSuccessful {
+      FilterLasting HATE_HUMANS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_ELVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_DWARVES Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_GREENSKINS Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+      FilterLasting HATE_UNDEAD Chain {
+        Permanent UNSTABLE
+        RemovePermanent UNSTABLE
+      }
+
+      # Make them the first in order automaton.
+      Permanent HATE_HUMANS
+    }
+  }
+}

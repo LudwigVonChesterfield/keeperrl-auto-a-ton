@@ -1,11 +1,22 @@
 "techpriestry" SPELL
   {
+    "extract corpse beer" 0
+    "construct automatons 1" 0
+    "construct part" 0
+    "think about hating greenskins" 0
+    "think about hating humans" 0
+    "think about hating elves" 0
     "repair automaton" 0
     "advanced automata repair" 0
     "rapid drone construction" 0
-	"overdrive" 1
-	"defense protocols" 2
-	"attack protocols" 2
-	"rapid automaton construction" 3
-    "animate weapons" 4
+    "overdrive" 1
+    "construct automatons 2" 3
+    "think about hating undead" 3
+    "defense protocols" 5
+    "attack protocols" 5
+    "construct automatons 3" 6
+    "think about hating dwarves" 7
+    "construct automatons 4" 8
+    "construct automatons 5" 9
+    "animate weapons" 10
   }

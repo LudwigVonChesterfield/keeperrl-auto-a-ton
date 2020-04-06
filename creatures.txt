@@ -112,12 +112,27 @@
     }
     spellSchools = { "techpriestry" }
     maxLevelIncrease = {
-      MELEE 10
+      MELEE 3
       SPELL 10
     }
     inventory = {
       { Simple "LeatherBoots" }
       { Simple "Robe" }
+      { Potion Name "corpse beer" Description "Smells of rot and alcohol." Chain {
+          IncreaseMorale 1.0
+          Lasting HALLU
+          Lasting SATIATED
+      }}
+      { Potion Name "corpse beer" Description "Smells of rot and alcohol." Chain {
+          IncreaseMorale 1.0
+          Lasting HALLU
+          Lasting SATIATED
+      }}
+      { Potion Name "corpse beer" Description "Smells of rot and alcohol." Chain {
+          IncreaseMorale 1.0
+          Lasting HALLU
+          Lasting SATIATED
+      }}
     }
 }
 
@@ -557,7 +572,7 @@
     spells = { "berserk mode" }
   }
 
-"ROGUE_DREADNAUGHT" inherit "DREADNAUGHT_CORPUS_IRON"
+"ROGUE_DREADNAUGHT_WOOD" inherit "DREADNAUGHT_CORPUS_WOOD"
 {
     #addAutomatonPart = {
     #  {Simple "CannonballAutomatonArmsIron"}
@@ -565,6 +580,35 @@
     #  {Simple "CannonballAutomatonArmsIron"}
     #  {Simple "AutomatonLegsIron"}
     #}
+}
+
+"ROGUE_DREADNAUGHT_STONE" inherit "DREADNAUGHT_CORPUS_STONE"
+{
+    #addAutomatonPart = {
+    #  {Simple "CannonballAutomatonArmsIron"}
+    #  {Simple "RepairAutomatonArmsIron"}
+    #  {Simple "CannonballAutomatonArmsIron"}
+    #  {Simple "AutomatonLegsIron"}
+    #}
+}
+
+"ROGUE_DREADNAUGHT_IRON" inherit "DREADNAUGHT_CORPUS_IRON"
+{
+    #addAutomatonPart = {
+    #  {Simple "CannonballAutomatonArmsIron"}
+    #  {Simple "RepairAutomatonArmsIron"}
+    #  {Simple "CannonballAutomatonArmsIron"}
+    #  {Simple "AutomatonLegsIron"}
+    #}
+}
+
+# Is used in Exalted Techpriest "spawn not more than 3 automatons at a time" spell.
+"AUTOMATON_CONSTRUCTABLE" inherit "AUTOMATON_CORPUS_IRON"
+{
+  permanentEffects = append {
+    SUMMONED 1
+    HATE_HUMANS 1
+  }
 }
 
 # GOLD AUTOMATON 228 214 20

@@ -1,4 +1,4 @@
-"4_gnomes" modify
+"0_gnomes" modify
 {
   creatureId = { "GNOME_OVERSEER" }
 
